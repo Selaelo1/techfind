@@ -2,19 +2,24 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../lib/store';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../lib/hooks/useAuth';
+import { toast } from 'react-hot-toast';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
+  const location = useLocation();
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const from = location.state?.from?.pathname || '/dashboard';
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -22,21 +27,22 @@ const Login = () => {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      // Here you would typically make an API call to authenticate the user
-      console.log('Login data:', data);
+      setIsLoading(true);
+      const user = await login(data.email, data.password);
+      toast.success('Welcome back!');
       
-      // Simulate successful login
-      setUser({
-        id: '1',
-        email: data.email,
-        role: 'freelancer',
-        name: 'John Doe',
-        verified: false,
-      });
-      
-      navigate('/dashboard');
+      // Ensure we have the user before navigating
+      if (user) {
+        if (user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      }
     } catch (error) {
-      console.error('Login error:', error);
+      toast.error('Invalid email or password');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,9 +100,10 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                disabled={isLoading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign in
+                {isLoading ? 'Signing in...' : 'Sign in'}
               </button>
             </div>
           </form>
