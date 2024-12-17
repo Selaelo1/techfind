@@ -2,13 +2,19 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useAuth } from '../lib/hooks/useAuth';
+import { toast } from 'react-hot-toast';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number'),
   confirmPassword: z.string(),
   role: z.enum(['freelancer', 'client']),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -21,29 +27,30 @@ type RegisterForm = z.infer<typeof registerSchema>;
 const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { register: registerUser, isLoading } = useAuth();
   const defaultRole = searchParams.get('type') as 'freelancer' | 'client' || 'freelancer';
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       role: defaultRole,
     },
   });
 
+  const selectedRole = watch('role');
+
   const onSubmit = async (data: RegisterForm) => {
     try {
-      // Here you would typically make an API call to register the user
-      console.log('Registration data:', data);
+      await registerUser(data.name, data.email, data.password, data.role);
+      toast.success('Account created successfully!');
       
-      // If registration is successful, redirect to profile creation for freelancers
-      // or dashboard for clients
       if (data.role === 'freelancer') {
         navigate('/create-profile');
       } else {
         navigate('/dashboard');
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      toast.error('Registration failed. Please try again.');
     }
   };
 
@@ -65,6 +72,42 @@ const Register = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                I want to
+              </label>
+              <div className="mt-2 grid grid-cols-2 gap-3">
+                <label className="relative flex">
+                  <input
+                    type="radio"
+                    {...register('role')}
+                    value="client"
+                    className="sr-only"
+                  />
+                  <div className={`
+                    flex-1 text-center px-4 py-3 border rounded-md cursor-pointer transition-colors
+                    ${selectedRole === 'client' ? 'bg-black text-white' : 'border-gray-300 hover:border-black'}
+                  `}>
+                    Hire Talent
+                  </div>
+                </label>
+                <label className="relative flex">
+                  <input
+                    type="radio"
+                    {...register('role')}
+                    value="freelancer"
+                    className="sr-only"
+                  />
+                  <div className={`
+                    flex-1 text-center px-4 py-3 border rounded-md cursor-pointer transition-colors
+                    ${selectedRole === 'freelancer' ? 'bg-black text-white' : 'border-gray-300 hover:border-black'}
+                  `}>
+                    Find Work
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Full Name
@@ -130,50 +173,22 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                I want to
-              </label>
-              <div className="mt-2 grid grid-cols-2 gap-3">
-                <label className="relative flex">
-                  <input
-                    type="radio"
-                    {...register('role')}
-                    value="client"
-                    className="sr-only"
-                  />
-                  <div className={`
-                    flex-1 text-center px-4 py-3 border rounded-md cursor-pointer
-                    ${defaultRole === 'client' ? 'bg-black text-white' : 'border-gray-300 hover:border-black'}
-                  `}>
-                    Hire Talent
-                  </div>
-                </label>
-                <label className="relative flex">
-                  <input
-                    type="radio"
-                    {...register('role')}
-                    value="freelancer"
-                    className="sr-only"
-                  />
-                  <div className={`
-                    flex-1 text-center px-4 py-3 border rounded-md cursor-pointer
-                    ${defaultRole === 'freelancer' ? 'bg-black text-white' : 'border-gray-300 hover:border-black'}
-                  `}>
-                    Find Work
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                disabled={isLoading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Account
+                {isLoading ? 'Creating account...' : 'Create Account'}
               </button>
             </div>
           </form>
+
+          <div className="mt-6 text-center text-sm">
+            <span className="text-gray-600">Already have an account?</span>{' '}
+            <Link to="/login" className="font-medium text-black hover:text-gray-900">
+              Sign in
+            </Link>
+          </div>
         </div>
       </div>
     </div>
