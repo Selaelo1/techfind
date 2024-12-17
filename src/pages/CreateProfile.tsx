@@ -1,25 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useNavigate } from "react-router-dom";
-import { Plus, X } from "lucide-react";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useNavigate } from 'react-router-dom';
+import { Plus, X } from 'lucide-react';
 
 const profileSchema = z.object({
-  hourlyRate: z.number().min(1, "Hourly rate is required"),
-  bio: z.string().min(100, "Bio must be at least 100 characters"),
-  skills: z.array(z.string()).min(1, "At least one skill is required"),
-  qualifications: z
-    .array(
-      z.object({
-        title: z.string().min(1, "Title is required"),
-        institution: z.string().min(1, "Institution is required"),
-        year: z.number().min(1900).max(new Date().getFullYear()),
-        certificateUrl: z.string().url().optional(),
-      })
-    )
-    .min(1, "At least one qualification is required"),
+  hourlyRate: z.number().min(1, 'Hourly rate is required'),
+  bio: z.string().min(100, 'Bio must be at least 100 characters'),
+  skills: z.array(z.string()).min(1, 'At least one skill is required'),
+  qualifications: z.array(z.object({
+    title: z.string().min(1, 'Title is required'),
+    institution: z.string().min(1, 'Institution is required'),
+    year: z.number().min(1900).max(new Date().getFullYear()),
+    certificateUrl: z.string().url().optional(),
+  })).min(1, 'At least one qualification is required'),
 });
 
 type ProfileForm = z.infer<typeof profileSchema>;
@@ -27,43 +22,33 @@ type ProfileForm = z.infer<typeof profileSchema>;
 const CreateProfile = () => {
   const navigate = useNavigate();
   const [skills, setSkills] = React.useState<string[]>([]);
-  const [newSkill, setNewSkill] = React.useState("");
+  const [newSkill, setNewSkill] = React.useState('');
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<ProfileForm>({
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       skills: [],
-      qualifications: [
-        { title: "", institution: "", year: new Date().getFullYear() },
-      ],
+      qualifications: [{ title: '', institution: '', year: new Date().getFullYear() }],
     },
   });
 
-  const qualifications = watch("qualifications");
+  const qualifications = watch('qualifications');
 
   const addSkill = () => {
     if (newSkill && !skills.includes(newSkill)) {
       setSkills([...skills, newSkill]);
-      setNewSkill("");
+      setNewSkill('');
     }
   };
 
   const removeSkill = (skillToRemove: string) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove));
+    setSkills(skills.filter(skill => skill !== skillToRemove));
   };
 
   const addQualification = () => {
-    const currentQualifications = watch("qualifications");
+    const currentQualifications = watch('qualifications');
     if (currentQualifications.length < 5) {
-      const newQualifications = [
-        ...currentQualifications,
-        { title: "", institution: "", year: new Date().getFullYear() },
-      ];
+      const newQualifications = [...currentQualifications, { title: '', institution: '', year: new Date().getFullYear() }];
       // Here you would update the form with the new qualifications array
     }
   };
@@ -71,24 +56,19 @@ const CreateProfile = () => {
   const onSubmit = async (data: ProfileForm) => {
     try {
       // Here you would typically make an API call to create the profile
-      console.log("Profile data:", data);
-      navigate("/dashboard");
+      console.log('Profile data:', data);
+      navigate('/dashboard');
     } catch (error) {
-      console.error("Profile creation error:", error);
+      console.error('Profile creation error:', error);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          Create Your Professional Profile
-        </h1>
-
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-8 bg-white p-8 rounded-lg shadow"
-        >
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Create Your Professional Profile</h1>
+        
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 bg-white p-8 rounded-lg shadow">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Hourly Rate (USD)
@@ -96,13 +76,11 @@ const CreateProfile = () => {
             <div className="mt-1">
               <input
                 type="number"
-                {...register("hourlyRate", { valueAsNumber: true })}
+                {...register('hourlyRate', { valueAsNumber: true })}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black"
               />
               {errors.hourlyRate && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.hourlyRate.message}
-                </p>
+                <p className="mt-1 text-sm text-red-600">{errors.hourlyRate.message}</p>
               )}
             </div>
           </div>
@@ -113,14 +91,12 @@ const CreateProfile = () => {
             </label>
             <div className="mt-1">
               <textarea
-                {...register("bio")}
+                {...register('bio')}
                 rows={4}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black"
               />
               {errors.bio && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.bio.message}
-                </p>
+                <p className="mt-1 text-sm text-red-600">{errors.bio.message}</p>
               )}
             </div>
           </div>
@@ -171,10 +147,7 @@ const CreateProfile = () => {
               Qualifications
             </label>
             {qualifications.map((_, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-1 gap-4 mb-4 p-4 border border-gray-200 rounded-md"
-              >
+              <div key={index} className="grid grid-cols-1 gap-4 mb-4 p-4 border border-gray-200 rounded-md">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Title
@@ -199,9 +172,7 @@ const CreateProfile = () => {
                   </label>
                   <input
                     type="number"
-                    {...register(`qualifications.${index}.year`, {
-                      valueAsNumber: true,
-                    })}
+                    {...register(`qualifications.${index}.year`, { valueAsNumber: true })}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black"
                   />
                 </div>
