@@ -1,36 +1,47 @@
-import React from 'react';
-import { Shield, TrendingUp, Users, Briefcase, Code2, Clock } from 'lucide-react';
+import {
+  Shield,
+  TrendingUp,
+  Users,
+  Briefcase,
+  Code2,
+  Clock,
+} from "lucide-react";
 
 const features = [
   {
     icon: Shield,
-    title: 'Verified Profiles',
-    description: 'Every professional is manually verified by our expert team to ensure top quality.',
+    title: "Verified Profiles",
+    description:
+      "Every professional is manually verified by our expert team to ensure top quality.",
   },
   {
     icon: TrendingUp,
-    title: 'Transparent Pricing',
-    description: 'No hidden fees or subscriptions. Just a simple 5% service fee on successful projects.',
+    title: "Transparent Pricing",
+    description:
+      "No hidden fees or subscriptions. Just a simple 5% service fee on successful projects.",
   },
   {
     icon: Users,
-    title: 'Strong Network',
-    description: 'Build lasting relationships with professionals in your industry.',
+    title: "Strong Network",
+    description:
+      "Build lasting relationships with professionals in your industry.",
   },
   {
     icon: Briefcase,
-    title: 'Quality Projects',
-    description: 'Access high-value opportunities from vetted businesses worldwide.',
+    title: "Quality Projects",
+    description:
+      "Access high-value opportunities from vetted businesses worldwide.",
   },
   {
     icon: Code2,
-    title: 'Tech Focus',
-    description: 'Specialized platform for technology and development projects.',
+    title: "Tech Focus",
+    description:
+      "Specialized platform for technology and development projects.",
   },
   {
     icon: Clock,
-    title: 'Quick Matching',
-    description: 'Find the right talent or project within hours, not weeks.',
+    title: "Quick Matching",
+    description: "Find the right talent or project within hours, not weeks.",
   },
 ];
 
@@ -39,10 +50,12 @@ const Features = () => {
     <section className="py-12 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose TechFind?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Why Choose TechFind?
+          </h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-            We're revolutionizing the tech freelancing industry with our unique approach
-            to connecting talent with opportunity.
+            We're revolutionizing the tech freelancing industry with our unique
+            approach to connecting talent with opportunity.
           </p>
         </div>
 
