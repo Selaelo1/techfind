@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Project } from '../../lib/types';
-import { Calendar, DollarSign, Clock } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { JobFilters } from "../../lib/types";
+import { Calendar, DollarSign, Clock } from "lucide-react";
 
 interface JobCardProps {
-  job: Project;
+  job: JobFilters;
 }
 
 export const JobCard: React.FC<JobCardProps> = ({ job }) => {
@@ -40,8 +40,8 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
       <div className="mt-4 flex items-center gap-6 text-sm text-gray-500">
         <div className="flex items-center">
-          <DollarSign className="h-4 w-4 mr-1" />
-          ${job.budget.min} - ${job.budget.max}
+          <DollarSign className="h-4 w-4 mr-1" />${job.budget.min} - $
+          {job.budget.max}
         </div>
         <div className="flex items-center">
           <Clock className="h-4 w-4 mr-1" />
