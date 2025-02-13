@@ -1,5 +1,5 @@
 import { mockAuthApi } from './mockAuth';
-import { User } from '../types';
+
 
 export interface LoginCredentials {
   email: string;
