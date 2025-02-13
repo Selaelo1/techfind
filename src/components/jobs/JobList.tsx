@@ -1,10 +1,10 @@
-import React from 'react';
-import { Project } from '../../lib/types';
-import { JobCard } from './JobCard';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import React from "react";
+import { JobFilters } from "../../lib/types";
+import { JobCard } from "./JobCard";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 
 interface JobListProps {
-  jobs: Project[];
+  jobs: JobFilters[];
   isLoading: boolean;
 }
 
@@ -16,7 +16,9 @@ export const JobList: React.FC<JobListProps> = ({ jobs, isLoading }) => {
   if (jobs.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">No projects found matching your criteria.</p>
+        <p className="text-gray-500 text-lg">
+          No projects found matching your criteria.
+        </p>
       </div>
     );
   }
