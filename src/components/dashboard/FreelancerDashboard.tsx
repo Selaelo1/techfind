@@ -1,6 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Briefcase, DollarSign, Star, Clock } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { Briefcase, DollarSign, Star, Clock } from "lucide-react";
 
 const FreelancerDashboard = () => {
   return (
@@ -87,7 +86,9 @@ const FreelancerDashboard = () => {
                 <div key={activity} className="flex items-start">
                   <div className="h-2 w-2 bg-black rounded-full mt-2 mr-3"></div>
                   <div>
-                    <p className="text-sm">Your bid was accepted for Project X</p>
+                    <p className="text-sm">
+                      Your bid was accepted for Project X
+                    </p>
                     <p className="text-xs text-gray-500">1 day ago</p>
                   </div>
                 </div>
