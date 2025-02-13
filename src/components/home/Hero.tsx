@@ -1,6 +1,5 @@
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -20,8 +19,9 @@ const Hero = () => {
                 Where Top Tech Talent Meets Innovation
               </h1>
               <p className="text-lg md:text-xl mb-8 text-gray-300 max-w-2xl mx-auto lg:mx-0">
-                Join the future of tech freelancing. No subscriptions, just a simple 5% service fee. 
-                Connect with verified professionals and bring your projects to life.
+                Join the future of tech freelancing. No subscriptions, just a
+                simple 5% service fee. Connect with verified professionals and
+                bring your projects to life.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
